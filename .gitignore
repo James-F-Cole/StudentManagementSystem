@@ -1,0 +1,14 @@
+# Visual Studio
+.slnx
+
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+
+# Rider
+.idea/
