@@ -14,6 +14,8 @@ namespace StudentManagementSystem
     {
 
         private StudentRecord[] studentRecords = new StudentRecord[10];
+        private int _size;
+        public int Size { get { return _size; } }
 
         public int Hash(int key)
         {
@@ -53,6 +55,7 @@ namespace StudentManagementSystem
                         currentStudent = currentStudent.Next;
                     }
                     currentStudent.Next = value;
+                    _size++;
                     return true;
                 }
                 return false;
@@ -60,6 +63,7 @@ namespace StudentManagementSystem
             else
             {
                 studentRecords[hashValue] = value;
+                _size++;
                 return true;
             }
         }
@@ -77,9 +81,11 @@ namespace StudentManagementSystem
                     if (previousStudent == null)
                     {
                         this.studentRecords[hashValue] = currentStudent.Next;
+                        _size--;
                         return true;
                     }
                     previousStudent.Next = currentStudent.Next;
+                    _size--;
                     return true;
                 }
                 previousStudent = currentStudent;
@@ -106,12 +112,13 @@ namespace StudentManagementSystem
             return null;
         }
 
-        public bool Update(StudentRecord student, string fullName, DateTime dateOfBirth, string phoneNumber, string emailAddress, string major)
+        public bool Update(StudentRecord student, string fullName, DateTime dateOfBirth, string phoneNumber, string emailAddress, string department, string major)
         {
             student.FullName = fullName;
             student.DateOfBirth = dateOfBirth;
             student.PhoneNumber = phoneNumber;
             student.EmailAddress = emailAddress;
+            student.Department = department;
             student.Major = major;
             return true;
         }

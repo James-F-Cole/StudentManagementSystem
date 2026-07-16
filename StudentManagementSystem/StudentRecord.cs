@@ -23,17 +23,16 @@ namespace StudentManagementSystem
         private string _emailAddress;
         public string EmailAddress { get { return _emailAddress; } set { _emailAddress = value; } }
 
-        /*
         private string _department;
         public string Department { get { return _department; } set { _department = value; } }
-        */
+        
         private string _major;
         public string Major { get { return _major; } set { _major = value; } }
 
         private StudentRecord _next;
         public StudentRecord Next { get { return _next; } set { _next = value; } }
 
-        public StudentRecord(int studentID, string fullName, DateTime dateOfBirth, string phoneNumber, string emailAddress, string major)
+        public StudentRecord(int studentID, string fullName, DateTime dateOfBirth, string phoneNumber, string emailAddress, string department, string major)
         {
 
             this.StudentId = studentID;
@@ -41,6 +40,7 @@ namespace StudentManagementSystem
             this.DateOfBirth = dateOfBirth;
             this.PhoneNumber = phoneNumber;
             this.EmailAddress = emailAddress;
+            this.Department = department;
             this.Major = major;
             this.Next = null;
 
