@@ -1,409 +1,320 @@
 # Student Management System
 
-> A C# Windows Forms application that demonstrates the implementation of a custom Hash Table data structure for efficient student record management.
+A simple **Student Management System** built with **C# Windows Forms** that demonstrates the implementation of a **Hash Table** using **Separate Chaining (Linked Lists)** as the collision resolution technique.
+
+The project was developed as a Data Structures assignment to illustrate how hash tables can efficiently store, retrieve, update, and delete student records.
 
 ---
 
-# Table of Contents
+# Features
 
-1. Project Overview
-2. Project Objectives
-3. Features
-4. Technologies Used
-5. System Architecture
-6. Project Structure
-7. Data Structure Design
-8. Hash Function
-9. Collision Resolution
-10. Backend API
-11. Installation
-12. Usage
-13. Team Responsibilities
-14. Testing
-15. Known Limitations
-16. Future Improvements
-17. Screenshots
-18. Contributors
-19. License
+The application supports the following operations:
+
+* Add a new student record
+* Search for a student by Student ID
+* Update an existing student record
+* Delete a student record
+* Display all stored student records
+* Prevent duplicate Student IDs from being inserted
 
 ---
 
-# 1. Project Overview
+# Student Record Structure
 
-## Description
+Each student record contains the following information:
 
-<!-- Brief description of the project -->
+| Field         | Data Type |
+| ------------- | --------- |
+| Student ID    | Integer   |
+| Full Name     | String    |
+| Date of Birth | DateTime  |
+| Phone Number  | String    |
+| Email Address | String    |
+| Department    | String    |
+| Major         | String    |
 
-## Problem Statement
-
-<!-- Explain the problem this application solves -->
-
----
-
-# 2. Project Objectives
-
-- [ ]
-- [ ]
-- [ ]
-- [ ]
+Each `StudentRecord` also contains a `Next` reference, allowing multiple records to be linked together when hash collisions occur.
 
 ---
 
-# 3. Features
-
-### Current Features
-
-- [ ]
-- [ ]
-- [ ]
-- [ ]
-
-### Planned Features
-
-- [ ]
-- [ ]
-- [ ]
-
----
-
-# 4. Technologies Used
-
-| Technology | Purpose |
-|------------|---------|
-| C# | |
-| Windows Forms | |
-| Visual Studio | |
-| Git | |
-| GitHub | |
-
----
-
-# 5. System Architecture
-
-## High-Level Architecture
-
-```text
-GUI
- │
- ▼
-HashTable
- │
- ▼
-StudentRecord
-```
-
-### Components
-
-#### GUI
-
-<!-- Description -->
-
-#### Hash Table
-
-<!-- Description -->
-
-#### Student Record
-
-<!-- Description -->
-
----
-
-# 6. Project Structure
-
-```text
-StudentManagementSystem/
-
-│
-├── Models/
-│
-├── DataStructures/
-│
-├── Forms/
-│
-├── Assets/
-│
-├── Program.cs
-│
-└── README.md
-```
-
----
-
-# 7. Data Structure Design
+# Data Structure
 
 ## Hash Table
 
-<!-- Explanation -->
+The application stores student records inside a hash table implemented as:
 
-## StudentRecord
+* Fixed-size array
+* Array size: **10 buckets**
+* Collision handling using **Separate Chaining**
+* Each bucket stores the head of a singly linked list of `StudentRecord` objects
 
-<!-- Explanation -->
+```
+Hash Table
 
-## Bucket Structure
+Bucket 0 → Student → Student → null
 
-```text
-Bucket 0
+Bucket 1 → null
 
-Bucket 1
+Bucket 2 → Student → null
 
-Student A
-    ↓
-Student B
-    ↓
-Student C
+Bucket 3 → Student → Student → Student → null
 
-Bucket 2
-
-Student D
+...
 ```
 
 ---
 
-# 8. Hash Function
+# Hash Function
 
-## Purpose
-
-<!-- -->
-
-## Algorithm
-
-1.
-2.
-3.
-4.
-
----
-
-# 9. Collision Resolution
-
-## Method Used
-
-<!-- -->
-
-## Example
+The hash function computes the bucket index using the student's ID.
 
 ```text
-Bucket 4
-
-John
- ↓
-Mary
- ↓
-James
+Hash(key) = key % 10
 ```
+
+For example:
+
+| Student ID | Bucket |
+| ---------- | ------ |
+| 101        | 1      |
+| 212        | 2      |
+| 333        | 3      |
+| 441        | 1      |
+
+Student IDs **101** and **441** both hash to bucket **1**, so they are stored in the same linked list.
 
 ---
 
-# 10. Backend API
+# Collision Resolution
+
+The project resolves collisions using **Separate Chaining**.
+
+When two students produce the same hash value:
+
+1. The first student is stored directly in the bucket.
+2. Additional students are appended to the linked list.
+3. Searching traverses the linked list until the matching Student ID is found.
+
+---
+
+# Core Classes
 
 ## StudentRecord
 
-| Member | Description |
-|---------|-------------|
-| | |
-| | |
-| | |
+Represents a single student node.
+
+### Properties
+
+* StudentId
+* FullName
+* DateOfBirth
+* PhoneNumber
+* EmailAddress
+* Department
+* Major
+* Next
+
+### Methods
+
+#### View()
+
+Returns a formatted string representation of the student record.
 
 ---
 
 ## HashTable
 
-### Constructor
+Manages all student records using hashing.
+
+### Internal Storage
 
 ```text
-HashTable()
+StudentRecord[] studentRecords = new StudentRecord[10];
 ```
 
-Description
+### Methods
 
-<!-- -->
+#### Hash(int key)
 
----
+Computes the hash value for a Student ID.
 
-### InsertStudent()
+Returns:
 
-Parameters
-
-Returns
-
-Description
+* Bucket index
 
 ---
 
-### SearchStudent()
+#### Add(StudentRecord value)
 
-Parameters
+Adds a new student record.
 
-Returns
+Behavior:
 
-Description
+* Computes hash value
+* Checks for duplicate Student ID
+* Inserts into the appropriate bucket
+* Appends to the linked list if a collision occurs
 
----
+Returns:
 
-### UpdateStudent()
-
-Parameters
-
-Returns
-
-Description
+* `true` if insertion succeeds
+* `false` if the Student ID already exists
 
 ---
 
-### DeleteStudent()
+#### Contains(int key)
 
-Parameters
+Checks whether a Student ID already exists.
 
-Returns
+Returns:
 
-Description
-
----
-
-### Contains()
-
-Parameters
-
-Returns
-
-Description
+* `true` if found
+* `false` otherwise
 
 ---
 
-### GetHash()
+#### Search(int key)
 
-Parameters
+Searches for a student by Student ID.
 
-Returns
+Returns:
 
-Description
-
----
-
-# 11. Installation
-
-## Requirements
-
-- Visual Studio
-- .NET
-- Git
-
-## Steps
-
-1.
-2.
-3.
-4.
+* Matching `StudentRecord`
+* `null` if not found
 
 ---
 
-# 12. Usage
+#### Update(...)
 
-## Running the Application
+Updates an existing student's information.
 
-1.
-2.
-3.
+Fields that can be updated:
 
-## Example Workflow
+* Full Name
+* Date of Birth
+* Phone Number
+* Email Address
+* Department
+* Major
 
-1.
-2.
-3.
-4.
+Returns:
 
----
-
-# 13. Team Responsibilities
-
-| Member | Responsibilities | Status |
-|---------|------------------|--------|
-| Member 1 | | |
-| Member 2 | | |
-| Member 3 | | |
+* `true`
 
 ---
 
-# 14. Testing
+#### Remove(int key)
 
-## Test Cases
+Deletes a student record.
 
-| Test | Expected Result | Status |
-|------|-----------------|--------|
-| | | |
-| | | |
-| | | |
+Handles removal from:
 
----
+* Beginning of a linked list
+* Middle of a linked list
+* End of a linked list
 
-## Collision Tests
+Returns:
 
-<!-- -->
-
----
-
-## CRUD Tests
-
-<!-- -->
+* `true` if removed
+* `false` if not found
 
 ---
 
-# 15. Known Limitations
+#### ViewAll()
 
-- [ ]
-- [ ]
-- [ ]
+Traverses every bucket and linked list, returning a formatted string containing all stored student records.
 
 ---
 
-# 16. Future Improvements
+# Algorithm Summary
 
-- [ ]
-- [ ]
-- [ ]
-- [ ]
-- [ ]
+## Insert
 
----
-
-# 17. Screenshots
-
-## Main Window
-
-*(Insert screenshot here)*
+1. Compute hash value.
+2. Check whether the Student ID already exists.
+3. If the bucket is empty, insert directly.
+4. Otherwise, append to the linked list.
 
 ---
 
 ## Search
 
-*(Insert screenshot here)*
-
----
-
-## Update
-
-*(Insert screenshot here)*
+1. Compute hash value.
+2. Traverse the linked list in the bucket.
+3. Return the matching student if found.
 
 ---
 
 ## Delete
 
-*(Insert screenshot here)*
+1. Compute hash value.
+2. Traverse the linked list.
+3. Relink nodes if necessary.
+4. Remove the matching student.
 
 ---
 
-# 18. Contributors
+## Update
 
-| Name | Role | Contribution |
-|------|------|--------------|
-| | | |
-| | | |
-| | | |
+1. Search for the student.
+2. Modify the student's properties.
+3. Return success.
 
 ---
 
-# 19. License
+# Time Complexity
 
-This project was developed as part of a university coursework assignment.
+| Operation | Average Case | Worst Case |
+| --------- | ------------ | ---------- |
+| Insert    | O(1)         | O(n)       |
+| Search    | O(1)         | O(n)       |
+| Delete    | O(1)         | O(n)       |
+| Update    | O(1)         | O(n)       |
+| View All  | O(n)         | O(n)       |
 
-For educational purposes only.
+Where **n** is the number of student records stored in the table.
+
+---
+
+# Current Limitations
+
+* Fixed hash table size of 10 buckets.
+* No automatic resizing or rehashing.
+* Data is stored only in memory.
+* Records are lost when the application closes.
+* Student IDs are the only search key.
+
+---
+
+# Technologies Used
+
+* C#
+* .NET Framework
+* Windows Forms
+* Hash Tables
+* Separate Chaining (Linked Lists)
+* Object-Oriented Programming
+
+---
+
+# Future Improvements
+
+Possible enhancements include:
+
+* Dynamic resizing and rehashing
+* Persistent storage using files or a database
+* Search by name, department, or major
+* Record sorting
+* Export to CSV or Excel
+* Input validation
+* Improved user interface
+* Statistical analysis of bucket distribution
+
+---
+
+# Authors
+- Edwin Harris
+- Havious M. Wah
+- James F. Cole
+
+Developed as a Data Structures project demonstrating the implementation of a hash table using separate chaining for efficient student record management.
