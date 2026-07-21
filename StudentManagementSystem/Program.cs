@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using StudentManagementSystem.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +16,13 @@ namespace StudentManagementSystem
         [STAThread]
         static void Main()
         {
+            StudentRepository sr = new StudentRepository();
+            List<StudentRecord> students = sr.GetAllStudents();
+            HashTable hashTable = new HashTable();
+            foreach (StudentRecord student in students)
+            {
+                hashTable.Add(student, true);
+            }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

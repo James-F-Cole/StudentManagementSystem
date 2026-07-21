@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using StudentManagementSystem.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -13,9 +15,8 @@ namespace StudentManagementSystem
     internal class HashTable
     {
 
+        StudentRepository sr = new StudentRepository();
         private StudentRecord[] studentRecords = new StudentRecord[10];
-        private int _size;
-        public int Size { get { return _size; } }
 
         public int Hash(int key)
         {
@@ -42,56 +43,37 @@ namespace StudentManagementSystem
 
         }
 
-        public bool Add(StudentRecord value)
+        public bool Add(StudentRecord student, bool savedToDatabase = false)
         {
-            int hashValue = Hash(value.StudentId);
+            int hashValue = Hash(student.StudentId);
             if (studentRecords[hashValue] is StudentRecord)
             {
-                if (!Contains(value.StudentId))
+                if (!Contains(student.StudentId))
                 {
                     StudentRecord currentStudent = this.studentRecords[hashValue];
                     while (currentStudent.Next is StudentRecord)
                     {
                         currentStudent = currentStudent.Next;
                     }
-                    currentStudent.Next = value;
-                    _size++;
+                    currentStudent.Next = student;
+                    if (!savedToDatabase)
+                    {
+                        sr.InsertStudent(student.StudentId, student.FullName, student.DateOfBirth, student.PhoneNumber, student.EmailAddress, student.Department, student.Major);
+                    }
                     return true;
+
                 }
                 return false;
             }
             else
             {
-                studentRecords[hashValue] = value;
-                _size++;
+                studentRecords[hashValue] = student;
+                if (!savedToDatabase)
+                {
+                    sr.InsertStudent(student.StudentId, student.FullName, student.DateOfBirth, student.PhoneNumber, student.EmailAddress, student.Department, student.Major);
+                }
                 return true;
             }
-        }
-
-        public bool Remove(int key)
-        {
-            int hashValue = Hash(key);
-            StudentRecord previousStudent = null;
-            StudentRecord currentStudent = this.studentRecords[hashValue];
-            while (currentStudent is StudentRecord)
-            {
-
-                if (currentStudent.StudentId == key)
-                {
-                    if (previousStudent == null)
-                    {
-                        this.studentRecords[hashValue] = currentStudent.Next;
-                        _size--;
-                        return true;
-                    }
-                    previousStudent.Next = currentStudent.Next;
-                    _size--;
-                    return true;
-                }
-                previousStudent = currentStudent;
-                currentStudent = currentStudent.Next;
-            }
-            return false;
         }
 
         public StudentRecord Search(int key)
@@ -111,17 +93,52 @@ namespace StudentManagementSystem
             }
             return null;
         }
-
-        public bool Update(StudentRecord student, string fullName, DateTime dateOfBirth, string phoneNumber, string emailAddress, string department, string major)
+        public bool Update(int studentID, string fullName, DateTime dateOfBirth, string phoneNumber, string emailAddress, string department, string major)
         {
+            StudentRecord student = Search(studentID);
+            if (student == null)
+            {
+                return false;
+            }
             student.FullName = fullName;
             student.DateOfBirth = dateOfBirth;
             student.PhoneNumber = phoneNumber;
             student.EmailAddress = emailAddress;
             student.Department = department;
             student.Major = major;
+
+            sr.UpdateStudent(studentID, fullName, dateOfBirth, phoneNumber, emailAddress, department, major);
             return true;
         }
+
+        public bool Remove(int key)
+        {
+            int hashValue = Hash(key);
+            StudentRecord previousStudent = null;
+            StudentRecord currentStudent = this.studentRecords[hashValue];
+            while (currentStudent is StudentRecord)
+            {
+
+                if (currentStudent.StudentId == key)
+                {
+                    if (previousStudent == null)
+                    {
+                        this.studentRecords[hashValue] = currentStudent.Next;
+                        sr.DeleteStudent(currentStudent.StudentId);
+                        return true;
+                    }
+                    previousStudent.Next = currentStudent.Next;
+                    sr.DeleteStudent(currentStudent.StudentId);
+                    return true;
+                }
+                previousStudent = currentStudent;
+                currentStudent = currentStudent.Next;
+            }
+            return false;
+        }
+
+
+
 
         public string ViewAll()
         {
