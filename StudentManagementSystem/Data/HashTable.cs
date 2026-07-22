@@ -138,25 +138,30 @@ namespace StudentManagementSystem
         }
 
 
-
-
-        public string ViewAll()
+        public List<StudentRecord> GetAllStudents()
         {
-            string output = $"";
-            foreach (var record in this.studentRecords)
+            List<StudentRecord> students = new List<StudentRecord>();
+            foreach (StudentRecord record in this.studentRecords)
             {
-                if (record is StudentRecord)
+                StudentRecord currentRecord = record;
+                while (currentRecord is StudentRecord)
                 {
-                    output += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
-                    StudentRecord currentStudent = record;
-                    while (currentStudent is StudentRecord)
-                    {
-                        output += currentStudent.View() + "\n";
-                        currentStudent = currentStudent.Next;
-                    }
+                    students.Add(currentRecord);
+                    currentRecord = currentRecord.Next;
                 }
             }
-            return output;
+            return students;
         }
+
+        public void LoadStudents()
+        {
+            StudentRepository sr = new StudentRepository();
+            List<StudentRecord> students = sr.GetAllStudents();
+            foreach (StudentRecord student in students)
+            {
+                this.Add(student, true);
+            }
+        }
+
     }
 }

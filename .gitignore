@@ -1,5 +1,6 @@
 # Visual Studio
-.slnx
+.vs/
+*.slnx
 
 # Build results
 bin/
@@ -9,6 +10,13 @@ obj/
 *.user
 *.suo
 *.userosscache
+*.sln.docstates
 
 # Rider
 .idea/
+
+# Visual Studio cache
+*.VC.db
+
+# Nuget Packages
+packages/
